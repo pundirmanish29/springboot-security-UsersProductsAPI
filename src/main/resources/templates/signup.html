@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up | Bookstore</title>
+    <!-- Add Bootstrap CSS link -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="text-center">Sign Up</h3>
+                </div>
+                <div class="card-body">
+                    <form action="/signup" method="post">
+                        <div class="form-group">
+                            <label for="username">Username</label>
+                            <input type="text" id="username" name="username" class="form-control" required>
+                            <!-- Add a div to display email error messages -->
+                            <div id="usernameError" style="color: red;"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" class="form-control" required>
+                            <!-- Add a div to display email error messages -->
+                            <div id="emailError" style="color: red;"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="password" id="password" name="password" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="fullName">Full Name</label>
+                            <input type="text" id="fullName" name="fullName" class="form-control">
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Sign Up</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Bootstrap JS and jQuery script links -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // Input field selectors
+        var usernameInput = $('#username');
+        var emailInput = $('#email');
+
+        // Messages div
+        var emailError = $('#emailError'); // Add a reference to the email error div
+        var usernameError = $('#usernameError'); // Add a reference to the username error div
+
+        // Event handler for username input
+        usernameInput.on('keyup', function() {
+            var username = usernameInput.val();
+            checkUsername(username);
+        });
+
+        // Event handler for email input
+        emailInput.on('keyup', function() {
+            var email = emailInput.val();
+            checkEmail(email);
+        });
+
+        // Function to check username availability
+        function checkUsername(username) {
+            $.ajax({
+                url: '/signup/checkUsername', // Replace with your backend endpoint
+                method: 'POST', // Use GET or POST as appropriate
+                data: { username: username },
+                success: function(response) {
+                    debugger
+                    if (response.message.includes("already taken")) {
+                        // Display the email error message
+                        usernameError.html(response.message);
+                    } else {
+                        // Clear the email error message if no error
+                        usernameError.html("");
+                    }
+                }
+            });
+        }
+
+        // Function to check email availability
+        function checkEmail(email) {
+            $.ajax({
+                url: '/signup/checkEmail', // Replace with your backend endpoint
+                method: 'POST', // Use GET or POST as appropriate
+                data: { email: email },
+                success: function(response) {
+                    if (response.message.includes("already registered")) {
+                        // Display the email error message
+                        emailError.html(response.message);
+                    } else {
+                        // Clear the email error message if no error
+                        emailError.html("");
+                    }
+                }
+            });
+        }
+    });
+</script>
+</body>
+</html>
